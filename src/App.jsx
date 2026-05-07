@@ -168,4 +168,100 @@ export default function App(){
             <div className="login-sub">Class 10 CBSE Maths — Student Portal</div>
             <div className="field">
               <label>Email Address</label>
-      
+              <input type="email" placeholder="your@email.com" value={email} onChange={e=>setEmail(e.target.value)}/>
+            </div>
+            <div className="field">
+              <label>Password</label>
+              <input type="password" placeholder="••••••••" value={pass} onChange={e=>setPass(e.target.value)}/>
+            </div>
+            <button className="btn-login" onClick={handleLogin}>Login →</button>
+            <div className="demo-section">
+              Try demo login:
+              {DEMO.map((d,i)=>(<button key={i} className="demo-btn" onClick={()=>handleDemoLogin(d)}>{d.name}</button>))}
+            </div>
+          </div>
+        </div>
+        {toast&&<div className="toast">{toast}</div>}
+      </>
+    );
+  }
+
+  const totalLessons=CHAPTERS.reduce((sum,ch)=>sum+ch.lessons,0);
+  const completedLessons=0;
+  const progressPercent=Math.round((completedLessons/totalLessons)*100);
+
+  return(
+    <>
+      <style>{S}</style>
+      <nav className="nav">
+        <div className="nav-brand">Teach<span>AI</span></div>
+        <div style={{display:'flex',gap:'8px'}}>
+          <div className="nav-tabs">
+            {[{id:1,name:"📚 Lessons"},{id:2,name:"🎬 Audiovisual"}].map(t=>(<button key={t.id} className={`nav-tab ${tab===t.id?"active":""}`} onClick={()=>setTab(t.id)}>{t.name}</button>))}
+          </div>
+        </div>
+        <div className="nav-right">
+          <div className="nav-user">👋 {user.name}</div>
+          <button className="logout-btn" onClick={handleLogout}>Logout</button>
+        </div>
+      </nav>
+
+      {tab===1&&(
+        <div className="dashboard">
+          <div className="dash-title">Class 10 CBSE Mathematics 2026–27</div>
+          <div className="course-wrap">
+            <div className="course-head">
+              <div className="course-icon">🧮</div>
+              <div className="course-info">
+                <h2>Complete CBSE Maths Curriculum</h2>
+                <p>14 chapters, 52+ lessons, board exam focused. New lessons added daily.</p>
+              </div>
+            </div>
+            <div style={{marginBottom:24}}>
+              <div className="progress-bar">
+                <div className="progress-fill" style={{width:`${progressPercent}%`}}></div>
+              </div>
+              <div className="progress-text">{completedLessons} of {totalLessons} lessons completed · {progressPercent}%</div>
+            </div>
+            <div className="chapters">
+              <div className="chapters-tag">📚 All Chapters</div>
+              {CHAPTERS.map(ch=>(<div key={ch.id}>
+                <div className="chapter-item" onClick={()=>setExpandedChapter(expandedChapter===ch.id?null:ch.id)}>
+                  <div className="chapter-name">
+                    <div className="chapter-title">Chapter {ch.num} — {ch.title}</div>
+                    <div className="chapter-topics">{ch.topics}</div>
+                  </div>
+                  <div style={{textAlign:'right'}}>
+                    <div className="chapter-count">0/{ch.lessons}</div>
+                    <div style={{fontSize:'0.7rem',color:'var(--muted)'}}>{expandedChapter===ch.id?"▼":"▶"}</div>
+                  </div>
+                </div>
+                {expandedChapter===ch.id&&(
+                  <div className="lessons">
+                    {ch.lessons_data.map(l=>(<div key={l.id} className="lesson">
+                      <div className="lesson-left">
+                        <div className="lesson-num">Lesson {l.id}</div>
+                        <div className="lesson-title">{l.title}</div>
+                        <div className="lesson-dur">{l.duration}</div>
+                      </div>
+                      <button className={`lesson-btn ${l.url?"":"soon"}`} onClick={()=>handlePlayLesson(ch.id,l.id)}>
+                        {l.url?"▶ Play":"🔜 Coming"}
+                      </button>
+                    </div>))}
+                  </div>
+                )}
+              </div>))}
+            </div>
+          </div>
+          <div style={{marginTop:28,padding:'18px',background:'var(--light)',borderRadius:12,fontSize:'0.88rem',color:'var(--muted)',lineHeight:1.6}}>
+            <strong>💡 How it works:</strong> Click on any chapter to expand and see lessons. New audio lessons added daily!
+          </div>
+        </div>
+      )}
+
+      {tab===2&&<AudiovisualLessonPlayer/>}
+
+      {toast&&<div className="toast">{toast}</div>}
+    </>
+  );
+}
