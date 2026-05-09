@@ -1,267 +1,505 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
-const S = `@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@700;900&family=Cabinet+Grotesk:wght@400;600;700;800&display=swap');*{box-sizing:border-box;margin:0;padding:0}:root{--bg:#f7f4ef;--ink:#111010;--card:#fff;--accent:#d94f2b;--green:#276749;--border:#e2ddd6;--muted:#7a7570;--light:#ede9e2}.nav{position:sticky;top:0;z-index:200;background:rgba(247,244,239,.95);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 40px;height:64px}body{font-family:'Cabinet Grotesk',sans-serif;background:var(--bg);color:var(--ink)}.nav-brand{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:900}.nav-brand span{color:var(--accent)}.nav-right{display:flex;align-items:center;gap:16px}.nav-user{font-size:.85rem;color:var(--muted)}.logout-btn{background:var(--accent);color:#fff;border:none;cursor:pointer;font-family:'Cabinet Grotesk',sans-serif;font-weight:600;font-size:.85rem;padding:10px 20px;border-radius:8px}.nav-tabs{display:flex;gap:6px;background:var(--light);padding:4px;border-radius:10px}.nav-tab{background:0;border:none;cursor:pointer;font-family:'Cabinet Grotesk',sans-serif;font-weight:600;font-size:.8rem;padding:8px 14px;border-radius:7px;color:var(--muted);transition:all .15s}.nav-tab.active{background:var(--card);color:var(--ink)}.login-container{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:linear-gradient(135deg,rgba(217,79,43,.08),rgba(43,108,176,.08))}.login-box{background:var(--card);border-radius:20px;border:1.5px solid var(--border);padding:40px;max-width:420px;width:100%}.login-title{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:900;margin-bottom:8px}.login-sub{color:var(--muted);font-size:.9rem;margin-bottom:28px}.field{margin-bottom:16px}.field label{display:block;font-size:.82rem;font-weight:700;margin-bottom:6px}.field input{width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-family:'Cabinet Grotesk',sans-serif;font-size:.9rem;outline:0}.field input:focus{border-color:var(--ink);background:#fff}.btn-login{width:100%;background:var(--ink);color:#fff;border:none;cursor:pointer;font-family:'Cabinet Grotesk',sans-serif;font-weight:700;font-size:1rem;padding:13px;border-radius:10px;margin-bottom:16px}.btn-login:hover{background:var(--accent)}.demo-section{text-align:center;padding-top:16px;border-top:1px solid var(--border);font-size:.82rem;color:var(--muted)}.demo-btn{background:var(--light);color:var(--ink);border:none;cursor:pointer;font-family:'Cabinet Grotesk',sans-serif;font-weight:600;font-size:.85rem;padding:8px 16px;border-radius:8px;margin-top:8px;margin-right:4px}.dashboard{padding:40px;max-width:1100px;margin:0 auto}.dash-title{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:900;margin-bottom:32px}.course-wrap{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:28px}.course-head{display:flex;align-items:center;gap:20px;margin-bottom:28px}.course-icon{font-size:2.4rem}.course-info h2{font-family:'Fraunces',serif;font-size:1.35rem;font-weight:900;margin-bottom:4px}.course-info p{color:var(--muted);font-size:.85rem}.progress-bar{width:100%;height:6px;background:var(--light);border-radius:3px;margin-bottom:8px}.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#c0421e);border-radius:3px}.progress-text{font-size:.8rem;color:var(--muted);text-align:right;margin-bottom:24px}.chapters-tag{font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--accent);margin-bottom:14px;letter-spacing:.1em}.chapter-item{background:var(--light);border-radius:12px;padding:16px 18px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:all .15s}.chapter-item:hover{background:var(--border);transform:translateX(3px)}.chapter-name{flex:1}.chapter-title{font-weight:700;font-size:.95rem}.chapter-topics{font-size:.78rem;color:var(--muted);margin-top:3px}.chapter-count{font-size:.8rem;font-weight:600;color:var(--accent)}.lessons{padding-left:20px;margin-bottom:8px;display:flex;flex-direction:column;gap:8px}.lesson{background:#fff;border:1.5px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between}.lesson-left{flex:1}.lesson-num{font-size:.75rem;font-weight:700;color:var(--muted);text-transform:uppercase}.lesson-title{font-weight:700;font-size:.9rem;margin:2px 0}.lesson-dur{font-size:.75rem;color:var(--muted)}.lesson-btn{background:var(--accent);color:#fff;border:none;cursor:pointer;font-family:'Cabinet Grotesk',sans-serif;font-weight:600;font-size:.8rem;padding:7px 14px;border-radius:6px}.lesson-btn.soon{background:var(--light);color:var(--muted);cursor:not-allowed}.toast{position:fixed;bottom:24px;right:24px;background:var(--ink);color:#fff;padding:12px 18px;border-radius:10px;font-size:.85rem;font-weight:600;z-index:999;animation:slideUp .25s ease}@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}.lesson-player{max-width:1000px;margin:40px auto;padding:40px 20px}.player-header{text-align:center;margin-bottom:40px}.player-title{font-family:'Fraunces',serif;font-size:2rem;font-weight:900;margin-bottom:8px}.player-subtitle{color:var(--muted);font-size:1rem}.player-badge{display:inline-block;background:var(--accent);color:#fff;padding:6px 14px;border-radius:20px;font-size:.75rem;font-weight:700;margin-bottom:16px}.video-container{background:var(--ink);border-radius:20px;overflow:hidden;margin-bottom:32px;aspect-ratio:16/9}.video-inner{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;background:linear-gradient(135deg,#1a1a2e,#16213e)}.lesson-display{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 40px;text-align:center;color:#fff}.section-title{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:900;margin-bottom:20px;animation:fadeIn .5s ease}.section-content{font-size:1.1rem;line-height:1.8;max-width:700px;animation:slideUp .6s ease}@keyframes fadeIn{from{opacity:0}to{opacity:1}}@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}.controls{background:var(--card);border-radius:16px;padding:24px;margin-bottom:32px;display:flex;align-items:center;gap:16px;box-shadow:0 4px 12px rgba(0,0,0,.08)}.play-btn{width:56px;height:56px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;transition:all .2s;flex-shrink:0}.play-btn:hover{background:#c0421e;transform:scale(1.08)}.play-btn.playing{background:#c0421e}.timeline-wrapper{flex:1}.timeline{width:100%;height:6px;background:var(--light);border-radius:3px;cursor:pointer}.timeline-fill{height:100%;background:linear-gradient(90deg,var(--accent),#c0421e);border-radius:3px}.time-display{display:flex;gap:8px;font-size:.85rem;color:var(--muted);font-weight:600;min-width:100px}.volume-control{display:flex;align-items:center;gap:8px}.volume-slider{width:100px;cursor:pointer}.lesson-info{background:var(--light);border-radius:16px;padding:28px;margin-bottom:32px}.lesson-info h3{font-family:'Fraunces',serif;font-size:1.2rem;font-weight:900;margin-bottom:12px}.lesson-info p{color:var(--muted);line-height:1.6;margin-bottom:8px}.sections-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:20px}.section-badge{background:var(--card);border:1.5px solid var(--border);padding:12px 16px;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .18s;text-align:center}.section-badge:hover{border-color:var(--accent)}.section-badge.active{background:var(--accent);color:#fff;border-color:var(--accent)}.tip-box{background:rgba(39,103,73,.1);border-left:4px solid #276749;padding:16px;border-radius:8px;margin-top:24px}.tip-box strong{color:#276749}audio{display:none}@media(max-width:768px){.nav{padding:0 20px}.nav-tabs{display:none}.dashboard{padding:20px}.lesson-player{padding:20px}}`;
+export default function App() {
+  const [page, setPage] = useState("home");
+  
+  if (page === "live") {
+    return <LiveClass onBack={() => setPage("home")} />;
+  }
 
-const CHAPTERS = [
-  {id:1,num:1,title:"Real Numbers",topics:"HCF, LCM, Fundamental Theorem",lessons:4,lessons_data:[{id:1,title:"What are Real Numbers?",duration:"25 min",url:""},{id:2,title:"Fundamental Theorem of Arithmetic",duration:"28 min",url:""},{id:3,title:"Proof of Irrationality",duration:"30 min",url:""},{id:4,title:"Revision & Practice",duration:"20 min",url:""}]},
-  {id:2,num:2,title:"Polynomials",topics:"Zeros, Coefficients",lessons:3,lessons_data:[{id:1,title:"Understanding Polynomials",duration:"25 min",url:""},{id:2,title:"Zeros and Coefficients",duration:"28 min",url:""},{id:3,title:"Practice Problems",duration:"22 min",url:""}]},
-  {id:3,num:3,title:"Pair of Linear Equations",topics:"Graphical & Algebraic",lessons:4,lessons_data:[{id:1,title:"Linear Equations Basics",duration:"26 min",url:""},{id:2,title:"Graphical Method",duration:"24 min",url:""},{id:3,title:"Algebraic Methods",duration:"28 min",url:""},{id:4,title:"Word Problems & Revision",duration:"25 min",url:""}]},
-  {id:4,num:4,title:"Quadratic Equations",topics:"Factorization, Formula",lessons:4,lessons_data:[{id:1,title:"Quadratic Equations Introduction",duration:"25 min",url:""},{id:2,title:"Solving by Factorization",duration:"27 min",url:""},{id:3,title:"Quadratic Formula & Roots",duration:"29 min",url:""},{id:4,title:"Word Problems & Practice",duration:"24 min",url:""}]},
-  {id:5,num:5,title:"Arithmetic Progressions",topics:"Nth Term, Sum",lessons:4,lessons_data:[{id:1,title:"Understanding AP",duration:"24 min",url:""},{id:2,title:"Nth Term Formula",duration:"26 min",url:""},{id:3,title:"Sum of N Terms",duration:"28 min",url:""},{id:4,title:"Applications & Practice",duration:"23 min",url:""}]},
-  {id:6,num:6,title:"Triangles",topics:"Similarity, Criteria",lessons:5,lessons_data:[{id:1,title:"Similarity Concept",duration:"25 min",url:""},{id:2,title:"AA & SSS Criteria",duration:"27 min",url:""},{id:3,title:"SAS & BPT Theorem",duration:"28 min",url:""},{id:4,title:"Area Theorem",duration:"24 min",url:""},{id:5,title:"Proofs & Problems",duration:"26 min",url:""}]},
-  {id:7,num:7,title:"Coordinate Geometry",topics:"Distance, Section",lessons:4,lessons_data:[{id:1,title:"Distance Formula",duration:"24 min",url:""},{id:2,title:"Section Formula",duration:"26 min",url:""},{id:3,title:"Area of Triangle",duration:"27 min",url:""},{id:4,title:"Problems & Applications",duration:"22 min",url:""}]},
-  {id:8,num:8,title:"Introduction to Trigonometry",topics:"Ratios, Identities",lessons:4,lessons_data:[{id:1,title:"Trigonometric Ratios",duration:"26 min",url:""},{id:2,title:"Standard Angles",duration:"25 min",url:""},{id:3,title:"Trigonometric Identities",duration:"28 min",url:""},{id:4,title:"Complementary Angles",duration:"24 min",url:""}]},
-  {id:9,num:9,title:"Applications of Trigonometry",topics:"Heights, Distances",lessons:3,lessons_data:[{id:1,title:"Elevation & Depression",duration:"25 min",url:""},{id:2,title:"Heights and Distances",duration:"27 min",url:""},{id:3,title:"Complex Problems",duration:"24 min",url:""}]},
-  {id:10,num:10,title:"Circles",topics:"Tangents, Theorems",lessons:4,lessons_data:[{id:1,title:"Circle Basics & Tangents",duration:"24 min",url:""},{id:2,title:"Tangent Theorems",duration:"26 min",url:""},{id:3,title:"Number of Tangents",duration:"27 min",url:""},{id:4,title:"Proofs & Problems",duration:"25 min",url:""}]},
-  {id:11,num:11,title:"Areas Related to Circles",topics:"Sector, Segment",lessons:4,lessons_data:[{id:1,title:"Area & Circumference",duration:"24 min",url:""},{id:2,title:"Sector & Arc",duration:"25 min",url:""},{id:3,title:"Segment Area",duration:"28 min",url:""},{id:4,title:"Complex Problems",duration:"26 min",url:""}]},
-  {id:12,num:12,title:"Surface Areas and Volumes",topics:"Solids, Combinations",lessons:4,lessons_data:[{id:1,title:"Cylinder: SA & Volume",duration:"24 min",url:""},{id:2,title:"Cone & Sphere",duration:"26 min",url:""},{id:3,title:"Combinations",duration:"28 min",url:""},{id:4,title:"Complex Problems",duration:"25 min",url:""}]},
-  {id:13,num:13,title:"Statistics",topics:"Mean, Median, Mode",lessons:3,lessons_data:[{id:1,title:"Mean of Grouped Data",duration:"24 min",url:""},{id:2,title:"Median & Mode",duration:"26 min",url:""},{id:3,title:"Cumulative Frequency",duration:"25 min",url:""}]},
-  {id:14,num:14,title:"Probability",topics:"Sample Space, Events",lessons:3,lessons_data:[{id:1,title:"Probability Basics",duration:"23 min",url:""},{id:2,title:"Card & Dice Problems",duration:"25 min",url:""},{id:3,title:"Complex Problems",duration:"24 min",url:""}]},
-];
+  return <HomePage onStart={() => setPage("live")} />;
+}
 
-const DEMO = [
-  {email:"student1@test.com",pass:"demo123",name:"Aryan Kumar"},
-  {email:"student2@test.com",pass:"demo123",name:"Priya Sharma"},
-];
-
-// ── AUDIOVISUAL LESSON PLAYER COMPONENT ──
-const LESSON_SECTIONS = [
-  {id:1,time:0,title:"Opening",content:"REAL NUMBERS — What exactly are they?",duration:60},
-  {id:2,time:60,title:"Learning Objectives",content:"By end of this lesson:\n✓ Understand the number system family\n✓ Know what makes a number real\n✓ Learn the different types",duration:45},
-  {id:3,time:105,title:"Natural Numbers",content:"Natural Numbers (ℕ)\n{1, 2, 3, 4, ...}\nCounting numbers",duration:30},
-  {id:4,time:135,title:"Whole Numbers",content:"Whole Numbers (W)\n{0, 1, 2, 3, ...}\nIncludes ZERO!",duration:30},
-  {id:5,time:165,title:"Integers",content:"Integers (ℤ)\n{..., -2, -1, 0, 1, 2, ...}\nIncludes NEGATIVE numbers",duration:30},
-  {id:6,time:195,title:"Rational Numbers",content:"Rational Numbers (ℚ)\nCan be written as p/q\nExamples: 1/2, 3/4, -5/3, 0.5, 0.75",duration:45},
-  {id:7,time:240,title:"Irrational Numbers",content:"Irrational Numbers\nCannot be written as p/q\nExamples: √2, √3, π, e\n√2 = 1.41421356... (never repeats!)",duration:45},
-];
-
-function AudiovisualLessonPlayer() {
-  const audioRef=useRef(null);
-  const[isPlaying,setIsPlaying]=useState(false);
-  const[currentTime,setCurrentTime]=useState(0);
-  const[duration,setDuration]=useState(0);
-  const[volume,setVolume]=useState(1);
-  const[currentSection,setCurrentSection]=useState(1);
-
-  useEffect(()=>{
-    const audio=audioRef.current;
-    if(!audio)return;
-    const updateTime=()=>setCurrentTime(audio.currentTime);
-    const updateDuration=()=>setDuration(audio.duration);
-    const handleEnded=()=>setIsPlaying(false);
-    audio.addEventListener("timeupdate",updateTime);
-    audio.addEventListener("loadedmetadata",updateDuration);
-    audio.addEventListener("ended",handleEnded);
-    return()=>{
-      audio.removeEventListener("timeupdate",updateTime);
-      audio.removeEventListener("loadedmetadata",updateDuration);
-      audio.removeEventListener("ended",handleEnded);
-    };
-  },[]);
-
-  useEffect(()=>{
-    const section=LESSON_SECTIONS.find((s,i)=>{
-      const nextSection=LESSON_SECTIONS[i+1];
-      return currentTime>=s.time&&(!nextSection||currentTime<nextSection.time);
-    });
-    if(section)setCurrentSection(section.id);
-  },[currentTime]);
-
-  const togglePlay=()=>{
-    if(isPlaying){audioRef.current?.pause();}else{audioRef.current?.play();}
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleTimelineClick=(e)=>{
-    const timeline=e.currentTarget;
-    const rect=timeline.getBoundingClientRect();
-    const percent=(e.clientX-rect.left)/rect.width;
-    const newTime=percent*duration;
-    audioRef.current.currentTime=newTime;
-  };
-
-  const jumpToSection=(sectionTime)=>{
-    audioRef.current.currentTime=sectionTime;
-    setIsPlaying(true);
-    audioRef.current?.play();
-  };
-
-  const section=LESSON_SECTIONS.find(s=>s.id===currentSection)||LESSON_SECTIONS[0];
-  const progressPercent=duration?(currentTime/duration)*100:0;
-  const formatTime=(seconds)=>{if(!seconds||isNaN(seconds))return"0:00";const mins=Math.floor(seconds/60);const secs=Math.floor(seconds%60);return`${mins}:${secs.toString().padStart(2,"0")}`;};
-
-  return(
-    <div className="lesson-player">
-      <div className="player-header">
-        <div className="player-badge">🧮 INTERACTIVE LESSON</div>
-        <div className="player-title">Real Numbers — Day 1</div>
-        <div className="player-subtitle">CBSE Class 10 Maths | What are Real Numbers?</div>
+function HomePage({ onStart }) {
+  return (
+    <div style={{ fontFamily: "Arial, sans-serif" }}>
+      <div style={{ background: "white", padding: "20px 40px", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}>
+        <h1 style={{ margin: 0 }}>Teach<span style={{ color: "#d94f2b" }}>AI</span></h1>
       </div>
-      <div className="video-container">
-        <div className="video-inner">
-          <div className="lesson-display">
-            <div className="section-title">{section.title}</div>
-            <div className="section-content" style={{whiteSpace:"pre-wrap"}}>{section.content}</div>
+
+      <div style={{ padding: "40px", maxWidth: "1200px", margin: "0 auto" }}>
+        <h2>Class 10 CBSE Mathematics 2026–27</h2>
+        <p style={{ color: "#666" }}>Live AI Classes with Voice & Animated Blackboard</p>
+
+        <div style={{ 
+          display: "grid", 
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", 
+          gap: "20px",
+          marginTop: "40px"
+        }}>
+          <div style={{ 
+            background: "white", 
+            border: "2px solid #e0e0e0", 
+            borderRadius: "12px", 
+            overflow: "hidden"
+          }}>
+            <div style={{ 
+              height: "120px", 
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "48px"
+            }}>
+              🧮
+            </div>
+            <div style={{ padding: "20px" }}>
+              <h3 style={{ margin: "0 0 8px 0" }}>Real Numbers</h3>
+              <p style={{ color: "#666", fontSize: "14px", margin: "0 0 16px 0" }}>
+                Complete 2026-27 curriculum with voice narration
+              </p>
+              <div style={{ 
+                display: "inline-block", 
+                background: "#dc3545", 
+                color: "white", 
+                padding: "4px 10px", 
+                borderRadius: "4px", 
+                fontSize: "11px",
+                fontWeight: "bold",
+                marginBottom: "16px"
+              }}>
+                🔴 LIVE NOW
+              </div>
+              <button
+                onClick={onStart}
+                style={{
+                  width: "100%",
+                  background: "#28a745",
+                  color: "white",
+                  border: "none",
+                  padding: "10px",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  fontWeight: "bold"
+                }}
+              >
+                ▶ Join Live Class
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div className="controls">
-        <button className={`play-btn ${isPlaying?"playing":""}`} onClick={togglePlay}>{isPlaying?"⏸":"▶"}</button>
-        <div className="timeline-wrapper">
-          <div className="timeline" onClick={handleTimelineClick}>
-            <div className="timeline-fill" style={{width:`${progressPercent}%`}}></div>
-          </div>
-        </div>
-        <div className="time-display">
-          <span>{formatTime(currentTime)}</span>
-          <span>/</span>
-          <span>{formatTime(duration)}</span>
-        </div>
-        <div className="volume-control">
-          <span style={{fontSize:"1.2rem"}}>🔊</span>
-          <input type="range" min="0" max="1" step="0.1" value={volume} onChange={(e)=>{setVolume(e.target.value);audioRef.current.volume=e.target.value;}} className="volume-slider"/>
-        </div>
-      </div>
-      <div className="lesson-info">
-        <h3>📚 Lesson Overview</h3>
-        <p><strong>Duration:</strong> ~4 minutes (incomplete version)</p>
-        <p><strong>Topics Covered:</strong> Number system family, Natural numbers, Whole numbers, Integers, Rational numbers, Irrational numbers</p>
-        <h3 style={{marginTop:20,marginBottom:12}}>Jump to Section:</h3>
-        <div className="sections-list">
-          {LESSON_SECTIONS.map(s=>(<div key={s.id} className={`section-badge ${currentSection===s.id?"active":""}`} onClick={()=>jumpToSection(s.time)}>{s.title}</div>))}
-        </div>
-        <div className="tip-box"><strong>💡 Pro Tip:</strong> Click on any section above to jump to that part. Use the play/pause button to control audio.</div>
-      </div>
-      <audio ref={audioRef}><source src="/Real_numbers_1.mp3" type="audio/mpeg"/></audio>
     </div>
   );
 }
 
-export default function App(){
-  const[loggedIn,setLoggedIn]=useState(false);
-  const[user,setUser]=useState(null);
-  const[email,setEmail]=useState("");
-  const[pass,setPass]=useState("");
-  const[expandedChapter,setExpandedChapter]=useState(null);
-  const[toast,setToast]=useState(null);
-  const[tab,setTab]=useState(1);
+function LiveClass({ onBack }) {
+  const [slideIndex, setSlideIndex] = useState(0);
+  const [lines, setLines] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
+  const messagesRef = useRef(null);
+  const synthRef = useRef(window.speechSynthesis);
 
-  const showToast=(msg)=>{setToast(msg);setTimeout(()=>setToast(null),2800);};
+  const slides = [
+    {
+      title: "REAL NUMBERS - DAY 1",
+      lines: [
+        "Welcome to Class 10 CBSE Mathematics!",
+        "",
+        "Today we explore: REAL NUMBERS",
+        "",
+        "Topics covered:",
+        "✓ Number System Hierarchy",
+        "✓ Rational Numbers",
+        "✓ Irrational Numbers",
+        "✓ Board Exam Patterns",
+        "",
+        "Let's begin!"
+      ],
+      text: "Welcome to Class 10 CBSE Mathematics! Today we explore Real Numbers. We will cover the Number System Hierarchy, Rational Numbers, Irrational Numbers, and Board Exam Patterns. Let us begin!"
+    },
+    {
+      title: "NUMBER HIERARCHY",
+      lines: [
+        "Natural Numbers (ℕ)",
+        "{1, 2, 3, 4, ...}",
+        "",
+        "Whole Numbers (W)",
+        "{0, 1, 2, 3, ...}",
+        "",
+        "Integers (ℤ)",
+        "{..., -2, -1, 0, 1, 2, ...}",
+        "",
+        "Rational Numbers (ℚ)",
+        "Any number as p/q",
+        "",
+        "Real Numbers (ℝ)",
+        "Everything on the line!"
+      ],
+      text: "Let us understand the number hierarchy. Natural Numbers are 1, 2, 3, 4. Whole Numbers are 0, 1, 2, 3. Integers include negative numbers: negative 2, negative 1, 0, 1, 2. Rational Numbers are any number expressed as p divided by q. Real Numbers include everything on the number line!"
+    },
+    {
+      title: "RATIONAL NUMBERS",
+      lines: [
+        "Definition: p/q where q ≠ 0",
+        "",
+        "Examples:",
+        "• 1/2 = 0.5 (Terminating)",
+        "• 1/3 = 0.333... (Repeating)",
+        "• 22/7 ≈ 3.14 (Pi approximation)",
+        "• -5/2 = -2.5 (Negative)",
+        "",
+        "Key Fact:",
+        "ALL integers are rational!",
+        "Example: 5 = 5/1"
+      ],
+      text: "Rational Numbers are defined as p divided by q where q is not zero. Examples include one half equals zero point five, which is terminating. One third equals zero point three repeating. Twenty-two sevenths approximates pi. Negative five halves equals negative two point five. Important: All integers are rational! For example, 5 can be written as 5 divided by 1."
+    },
+    {
+      title: "IRRATIONAL NUMBERS",
+      lines: [
+        "Cannot be expressed as p/q",
+        "",
+        "Examples:",
+        "• √2 = 1.41421356...",
+        "• √3 = 1.73205080...",
+        "• π = 3.14159265...",
+        "• e = 2.71828182...",
+        "",
+        "Characteristics:",
+        "✓ Non-terminating decimal",
+        "✓ Non-repeating pattern",
+        "✓ Infinite decimal expansion"
+      ],
+      text: "Irrational Numbers cannot be expressed as p divided by q. Examples are square root of 2, square root of 3, pi, and e. These have non-terminating decimals that never repeat and have infinite decimal expansion."
+    },
+    {
+      title: "REAL NUMBERS DEFINED",
+      lines: [
+        "Real Numbers = Rational + Irrational",
+        "",
+        "Every point on the number line",
+        "is a Real Number!",
+        "",
+        "The Number Line:",
+        "←————————0————————→",
+        "  -∞      +∞",
+        "",
+        "Includes:",
+        "✓ All Naturals",
+        "✓ All Integers",
+        "✓ All Rationals",
+        "✓ All Irrationals"
+      ],
+      text: "Real Numbers are the union of rational and irrational numbers. Every point on the number line is a real number. The number line extends from negative infinity to positive infinity with zero in the middle. Real numbers include all natural numbers, all integers, all rational numbers, and all irrational numbers."
+    },
+    {
+      title: "2026-27 BOARD EXAM FOCUS",
+      lines: [
+        "1 Mark Questions:",
+        "Identify and classify numbers",
+        "",
+        "2 Mark Questions:",
+        "Prove irrationality of numbers",
+        "Simplify square roots",
+        "",
+        "3 Mark Questions:",
+        "HCF and LCM problems",
+        "Convert decimal to fraction",
+        "",
+        "4 Mark Questions:",
+        "Case studies and applications"
+      ],
+      text: "For the 2026-27 board exam, one mark questions will ask you to identify and classify numbers. Two mark questions will require you to prove irrationality and simplify square roots. Three mark questions focus on HCF, LCM, and converting decimals to fractions. Four mark questions involve case studies and applications."
+    },
+    {
+      title: "KEY TAKEAWAYS",
+      lines: [
+        "Remember the hierarchy:",
+        "ℕ ⊂ W ⊂ ℤ ⊂ ℚ ⊂ ℝ",
+        "",
+        "Critical Facts:",
+        "1. √prime numbers = irrational",
+        "2. p/q form (q≠0) = rational",
+        "3. Non-repeating decimal = irrational",
+        "4. All number line points = real",
+        "",
+        "Next Chapter: Polynomials!",
+        "Work hard! Success awaits! 📚"
+      ],
+      text: "Remember the hierarchy: Natural numbers are a subset of whole numbers, which are a subset of integers, which are a subset of rational numbers, which are a subset of real numbers. Critical facts: square root of prime numbers are irrational. P divided by Q form where Q is not zero equals rational. Non-repeating decimals are irrational. All points on the number line are real. The next chapter is Polynomials. Work hard and success awaits!"
+    }
+  ];
 
-  const handleLogin=()=>{
-    const found=DEMO.find(d=>d.email===email&&d.pass===pass);
-    if(found){setLoggedIn(true);setUser(found);showToast(`✅ Welcome ${found.name}!`);}else{showToast("❌ Incorrect email or password");}
+  // Auto-play current slide
+  useEffect(() => {
+    if (!isPlaying || slideIndex >= slides.length) return;
+
+    const slide = slides[slideIndex];
+    setLines([]);
+    
+    let lineIdx = 0;
+    
+    // Start speech
+    const synth = window.speechSynthesis;
+    synth.cancel();
+    
+    const utterance = new SpeechSynthesisUtterance(slide.text);
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+
+    // Line animation every 400ms
+    const lineTimer = setInterval(() => {
+      if (lineIdx < slide.lines.length) {
+        setLines(prev => [...prev, slide.lines[lineIdx]]);
+        lineIdx++;
+      }
+    }, 400);
+
+    synth.speak(utterance);
+
+    utterance.onend = () => {
+      clearInterval(lineTimer);
+      setTimeout(() => {
+        if (slideIndex < slides.length - 1) {
+          setSlideIndex(slideIndex + 1);
+        }
+      }, 1500);
+    };
+
+    return () => {
+      clearInterval(lineTimer);
+      synth.cancel();
+    };
+  }, [slideIndex, isPlaying, slides]);
+
+  useEffect(() => {
+    messagesRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const sendMessage = async () => {
+    if (!input.trim()) return;
+
+    const userMsg = { type: "user", text: input };
+    setMessages(prev => [...prev, userMsg]);
+    setInput("");
+    setLoading(true);
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 100,
+          messages: [{
+            role: "user",
+            content: `You are a CBSE Class 10 Math teacher. Student asks about Real Numbers: "${input}". Reply in 1-2 sentences. Use emoji.`
+          }]
+        })
+      });
+
+      const data = await response.json();
+      const aiMsg = data.content?.[0]?.text || "Great question! Keep learning!";
+      
+      setMessages(prev => [...prev, { type: "ai", text: aiMsg }]);
+
+      // Speak response
+      const synth = window.speechSynthesis;
+      const reply = new SpeechSynthesisUtterance(aiMsg);
+      reply.rate = 0.9;
+      synth.speak(reply);
+    } catch (err) {
+      setMessages(prev => [...prev, { type: "ai", text: "Great question! 📚" }]);
+    }
+    
+    setLoading(false);
   };
 
-  const handleDemoLogin=(d)=>{setEmail(d.email);setPass(d.pass);setTimeout(()=>handleLogin(),100);};
-  const handleLogout=()=>{setLoggedIn(false);setUser(null);setEmail("");setPass("");showToast("👋 Logged out");};
-  const handlePlayLesson=(chId,lId)=>{const ch=CHAPTERS.find(c=>c.id===chId);const lesson=ch.lessons_data.find(l=>l.id===lId);if(lesson.url){showToast(`🎧 Playing: ${lesson.title}`);}else{showToast("⏳ Audio coming soon!");}};
-
-  if(!loggedIn){
-    return(
-      <>
-        <style>{S}</style>
-        <div className="login-container">
-          <div className="login-box">
-            <div style={{fontSize:'1.6rem',marginBottom:10}}>🎓</div>
-            <div className="login-title">TeachAI</div>
-            <div className="login-sub">Class 10 CBSE Maths — Student Portal</div>
-            <div className="field">
-              <label>Email Address</label>
-              <input type="email" placeholder="your@email.com" value={email} onChange={e=>setEmail(e.target.value)}/>
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", height: "100vh", background: "#000", gap: 0 }}>
+      {/* Main Area */}
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {/* Blackboard */}
+        <div style={{ 
+          flex: 1, 
+          display: "flex", 
+          alignItems: "center", 
+          justifyContent: "center", 
+          padding: "20px",
+          overflow: "hidden"
+        }}>
+          <div style={{
+            width: "100%",
+            height: "100%",
+            background: "linear-gradient(to bottom, #0d4620, #1a5c2e)",
+            border: "5px solid #654321",
+            borderRadius: "10px",
+            padding: "40px",
+            color: "#FFE5B4",
+            fontFamily: "'Courier New', monospace",
+            fontSize: "18px",
+            lineHeight: "1.8",
+            overflowY: "auto",
+            boxSizing: "border-box"
+          }}>
+            <div style={{ fontSize: "28px", fontWeight: "bold", color: "#FFD700", marginBottom: "20px", borderBottom: "3px solid #FFD700", paddingBottom: "10px" }}>
+              {slides[slideIndex].title}
             </div>
-            <div className="field">
-              <label>Password</label>
-              <input type="password" placeholder="••••••••" value={pass} onChange={e=>setPass(e.target.value)}/>
-            </div>
-            <button className="btn-login" onClick={handleLogin}>Login →</button>
-            <div className="demo-section">
-              Try demo login:
-              {DEMO.map((d,i)=>(<button key={i} className="demo-btn" onClick={()=>handleDemoLogin(d)}>{d.name}</button>))}
-            </div>
-          </div>
-        </div>
-        {toast&&<div className="toast">{toast}</div>}
-      </>
-    );
-  }
-
-  const totalLessons=CHAPTERS.reduce((sum,ch)=>sum+ch.lessons,0);
-  const completedLessons=0;
-  const progressPercent=Math.round((completedLessons/totalLessons)*100);
-
-  return(
-    <>
-      <style>{S}</style>
-      <nav className="nav">
-        <div className="nav-brand">Teach<span>AI</span></div>
-        <div style={{display:'flex',gap:'8px'}}>
-          <div className="nav-tabs">
-            {[{id:1,name:"📚 Lessons"},{id:2,name:"🎬 Audiovisual"}].map(t=>(<button key={t.id} className={`nav-tab ${tab===t.id?"active":""}`} onClick={()=>setTab(t.id)}>{t.name}</button>))}
-          </div>
-        </div>
-        <div className="nav-right">
-          <div className="nav-user">👋 {user.name}</div>
-          <button className="logout-btn" onClick={handleLogout}>Logout</button>
-        </div>
-      </nav>
-
-      {tab===1&&(
-        <div className="dashboard">
-          <div className="dash-title">Class 10 CBSE Mathematics 2026–27</div>
-          <div className="course-wrap">
-            <div className="course-head">
-              <div className="course-icon">🧮</div>
-              <div className="course-info">
-                <h2>Complete CBSE Maths Curriculum</h2>
-                <p>14 chapters, 52+ lessons, board exam focused. New lessons added daily.</p>
+            {lines.map((line, i) => (
+              <div key={i} style={{ marginBottom: "10px", minHeight: "20px" }}>
+                {line}
               </div>
-            </div>
-            <div style={{marginBottom:24}}>
-              <div className="progress-bar">
-                <div className="progress-fill" style={{width:`${progressPercent}%`}}></div>
-              </div>
-              <div className="progress-text">{completedLessons} of {totalLessons} lessons completed · {progressPercent}%</div>
-            </div>
-            <div className="chapters">
-              <div className="chapters-tag">📚 All Chapters</div>
-              {CHAPTERS.map(ch=>(<div key={ch.id}>
-                <div className="chapter-item" onClick={()=>setExpandedChapter(expandedChapter===ch.id?null:ch.id)}>
-                  <div className="chapter-name">
-                    <div className="chapter-title">Chapter {ch.num} — {ch.title}</div>
-                    <div className="chapter-topics">{ch.topics}</div>
-                  </div>
-                  <div style={{textAlign:'right'}}>
-                    <div className="chapter-count">0/{ch.lessons}</div>
-                    <div style={{fontSize:'0.7rem',color:'var(--muted)'}}>{expandedChapter===ch.id?"▼":"▶"}</div>
-                  </div>
-                </div>
-                {expandedChapter===ch.id&&(
-                  <div className="lessons">
-                    {ch.lessons_data.map(l=>(<div key={l.id} className="lesson">
-                      <div className="lesson-left">
-                        <div className="lesson-num">Lesson {l.id}</div>
-                        <div className="lesson-title">{l.title}</div>
-                        <div className="lesson-dur">{l.duration}</div>
-                      </div>
-                      <button className={`lesson-btn ${l.url?"":"soon"}`} onClick={()=>handlePlayLesson(ch.id,l.id)}>
-                        {l.url?"▶ Play":"🔜 Coming"}
-                      </button>
-                    </div>))}
-                  </div>
-                )}
-              </div>))}
-            </div>
-          </div>
-          <div style={{marginTop:28,padding:'18px',background:'var(--light)',borderRadius:12,fontSize:'0.88rem',color:'var(--muted)',lineHeight:1.6}}>
-            <strong>💡 How it works:</strong> Click on any chapter to expand and see lessons. New audio lessons added daily!
+            ))}
           </div>
         </div>
-      )}
 
-      {tab===2&&<AudiovisualLessonPlayer/>}
+        {/* Teacher Bar */}
+        <div style={{
+          height: "120px",
+          background: "linear-gradient(to right, #1a1a1a, #0a0a0a)",
+          display: "flex",
+          alignItems: "center",
+          gap: "20px",
+          padding: "0 30px",
+          borderTop: "2px solid #333",
+          color: "white"
+        }}>
+          <div style={{
+            width: "80px",
+            height: "80px",
+            background: "linear-gradient(135deg, #d94f2b, #ff6b4a)",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "40px",
+            flexShrink: 0,
+            position: "relative"
+          }}>
+            🧑‍🏫
+            <div style={{
+              position: "absolute",
+              bottom: "8px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: "15px",
+              height: "8px",
+              background: "#8B4513",
+              borderRadius: "50%",
+              animation: isPlaying ? "mouth 0.2s infinite" : "none"
+            }}></div>
+          </div>
 
-      {toast&&<div className="toast">{toast}</div>}
-    </>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontWeight: "bold", fontSize: "14px" }}>AI Teacher - Real Numbers</div>
+            <div style={{ fontSize: "12px", color: "#aaa" }}>
+              {isPlaying ? "🔊 Teaching now..." : "Paused"} | Slide {slideIndex + 1}/{slides.length}
+            </div>
+          </div>
+
+          <button
+            onClick={() => {
+              if (slideIndex < slides.length - 1) {
+                setSlideIndex(slideIndex + 1);
+              }
+            }}
+            style={{
+              background: "#28a745",
+              color: "white",
+              border: "none",
+              padding: "8px 16px",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              marginRight: "10px"
+            }}
+          >
+            ▶ Next
+          </button>
+
+          <button
+            onClick={onBack}
+            style={{
+              background: "#333",
+              color: "white",
+              border: "none",
+              padding: "8px 14px",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontWeight: "bold"
+            }}
+          >
+            ← Exit
+          </button>
+        </div>
+      </div>
+
+      {/* Chat Panel */}
+      <div style={{ display: "flex", flexDirection: "column", background: "#1a1a1a", borderLeft: "1px solid #333" }}>
+        <div style={{ padding: "16px", borderBottom: "1px solid #333", color: "white", fontWeight: "bold" }}>
+          💬 Questions
+        </div>
+        
+        <div style={{ flex: 1, overflowY: "auto", padding: "12px", display: "flex", flexDirection: "column", gap: "8px" }}>
+          {messages.map((m, i) => (
+            <div
+              key={i}
+              style={{
+                padding: "8px",
+                borderRadius: "6px",
+                fontSize: "12px",
+                background: m.type === "user" ? "rgba(217, 79, 43, 0.25)" : "#276749",
+                color: "white",
+                marginLeft: m.type === "user" ? "20px" : 0,
+                marginRight: m.type === "user" ? 0 : "20px",
+                textAlign: m.type === "user" ? "right" : "left"
+              }}
+            >
+              {m.text}
+            </div>
+          ))}
+          <div ref={messagesRef} />
+        </div>
+
+        <div style={{ padding: "10px", borderTop: "1px solid #333" }}>
+          <textarea
+            value={input}
+            onChange={e => setInput(e.target.value)}
+            placeholder="Ask a question..."
+            style={{
+              width: "100%",
+              background: "#2a2a2a",
+              border: "1px solid #444",
+              borderRadius: "6px",
+              padding: "8px",
+              color: "white",
+              fontSize: "12px",
+              resize: "none",
+              outline: "none"
+            }}
+            rows="2"
+          />
+          <button
+            onClick={sendMessage}
+            disabled={loading}
+            style={{
+              width: "100%",
+              background: "#d94f2b",
+              color: "white",
+              border: "none",
+              padding: "8px",
+              marginTop: "6px",
+              borderRadius: "6px",
+              cursor: "pointer",
+              fontWeight: "bold",
+              fontSize: "12px"
+            }}
+          >
+            {loading ? "..." : "Send"}
+          </button>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes mouth {
+          0%, 100% { height: 8px; }
+          50% { height: 14px; }
+        }
+      `}</style>
+    </div>
   );
 }
